@@ -1,0 +1,19 @@
+{
+  "infuraProjectID": "2ac28a6a90b84905931d0ba050321caa",
+  "ethAddress": "0x493A9869E3B5f846f72267ab19B76e9bf99d51b1",
+  "ethGasStation": "https://ethgasstation.info/json/ethgasAPI.json",
+  "main": {
+    "contractAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "infuraNetwork": "https://mainnet.infura.io/v3/",
+    "etherscan": "https://etherscan.io/tx/",
+    "currencyName": "USDC",
+    "chainId": 1
+  },
+  "testnet": {
+    "contractAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+    "infuraNetwork": "https://ropsten.infura.io/v3/",
+    "etherscan": "https://ropsten.etherscan.io/tx/",
+    "currencyName": "USDCR",
+    "chainId": 3
+  }
+}

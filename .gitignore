@@ -1,0 +1,52 @@
+#SSH
+*.pem
+
+# MacOS
+.DS_Store
+
+# Logs
+logs/*
+*.log
+*.log.gz
+npm-debug.log.*
+
+# Local Dev
+.env
+.foreman
+.idea
+.monitor
+.vscode
+*.orig
+Procfile
+/tmp/
+/src/config/**/*.local.js
+/apidocs
+
+# Node
+dump.rdb
+node_modules
+.tool-versions
+
+# SSL
+/resources/certs/*.crt
+/resources/certs/*.key
+
+# Coverage
+/test/coverage
+.nyc_output
+
+# Tests
+/test/jshint
+/test/junit/
+/test/results/*
+
+# Docker
+docker-compose.override.yml
+
+lambdaLocal.sh
+lambdaLocalEth.sh
+lambdaLocalTwitter.sh
+scripts/tests/
+scripts/deploy/
+
+secrets.json

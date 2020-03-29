@@ -1,0 +1,162 @@
+<HTML>
+<head>
+    <link rel='icon' href='https://s3.amazonaws.com/usdcfaucet.com/USDC.png' type='image/x-icon'/>
+    <title>USDC Faucet</title>
+</head>
+
+<style>
+    .content {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .footer {
+        bottom: 0;
+        width: 100%;
+    }
+
+    .fullWidth {
+        width: 100%
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loader {
+    animation: spin 1s infinite;
+    animation-play-state: paused;
+    -webkit-animation-play-state: paused;
+    }
+
+</style>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function onSubmit(token) {
+    submitRequest(token);
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
+<BODY BGCOLOR="FFFFFF" onload="toggleTestnet()">
+<div class="content">
+<HR>
+<H1><center> <a href="https://www.circle.com/en/usdc">USDC</a> Faucet</center></H1>
+    <P>1. Generate an Ethereum address. <a href="https://metamask.io">Metamask</a> is a great tool for this.
+    <P>2. Enter your Ethereum address below.
+    <P>3. Profit!
+    <br>
+    <br>
+<HR>
+
+<button id="mainnetButton" style="font-size: 14px; height: 26px;" onclick=toggleTestnet()>Mainnet</button>
+<button id="ropstenButton" style="font-size: 14px; height: 26px;" onclick=toggleTestnet()>Ropsten</button>
+
+<form id="myForm">
+    <h4>Ethereum Address:</h4>
+    <input class="fullWidth" id="ethereumAddress" type="text" name="ethereumAddress"><br>
+</form>
+<!-- <button onclick=updateSpinnerState()>Submit</button> -->
+<button id="submitButton" style="font-size: 14px; height: 26px;" class="g-recaptcha" data-sitekey="6LfHtpsUAAAAADpzm4NFFyOMN9Po2yg37WXY5s41" data-callback='onSubmit'>Submit</button>
+<!-- <button id="submitButton" onclick="submitRequest()">Click</button> -->
+<br>
+<P id= "responseLabel"><center> <a id="hyperlink" href="#"></a></center></P>
+<br>
+<br>
+<br>
+<div class="loader" id="animatingDiv"><center><img src="https://s3.amazonaws.com/usdcfaucet.com/USDC.png" height="70" width="70"></center></div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<HR>
+<H4><center>Additional Information</center></H4>
+    <P>- Please consider donating to the faucet so others can enjoy this free service.
+    <P>- "Last Transaction Still Pending, Try Again Soon."
+    Gas fees are set to low, so network confirmation may take time due to network congestion.
+    <P>- Mainnet vs Ropsten: The faucet will distribute coins on the main network or the ropsten test network.
+<HR>
+<H4>Faucet Donations: <a href="https://etherscan.io/address/0x493A9869E3B5f846f72267ab19B76e9bf99d51b1">0x493A9869E3B5f846f72267ab19B76e9bf99d51b1</a></H4>
+<H4>Source Code: <a href="https://github.com/mgrant34/ccmonkey">Github</a></H4>
+<H4>Feedback: <a href="mailto:mrg3443@gmail.com">Email</a></H4>
+</div>
+</BODY>
+
+<script>
+
+var useTestnet = true
+
+function toggleTestnet() {
+    useTestnet = !useTestnet
+    const selectedColor = "rgb(60, 117, 196)"
+    const unselectedColor = "white"
+
+    const selectedTextColor = "white"
+    const unselectedTextColor = "black"
+
+    const selectedButtonId = useTestnet ? "ropstenButton" : "mainnetButton"
+    const unselectedButtonId = useTestnet ? "mainnetButton" : "ropstenButton"
+
+    document.getElementById(selectedButtonId).disabled = true
+    document.getElementById(unselectedButtonId).disabled = false
+
+    document.getElementById(selectedButtonId).style.backgroundColor = selectedColor
+    document.getElementById(unselectedButtonId).style.backgroundColor = unselectedColor
+
+    document.getElementById(selectedButtonId).style.color = selectedTextColor
+    document.getElementById(unselectedButtonId).style.color = unselectedTextColor
+}
+
+function cancelAnimation() {
+    var spinner =  document.getElementById("animatingDiv")
+    var newone = spinner.cloneNode(true)
+    newone.style.animationPlayState = "paused"
+    spinner.parentNode.replaceChild(newone, spinner)
+}
+
+function updateSpinnerState() {
+    var spinner =  document.getElementById("animatingDiv")
+    if (spinner.style.animationPlayState == "running") {
+        cancelAnimation()
+    } else {
+        document.getElementById("animatingDiv").style.animationPlayState = "running"
+    }
+}
+
+function submitRequest(token) {
+    let dataObject = {
+        destinationAddress: document.getElementById("ethereumAddress").value,
+        recaptchaToken: token,
+        useTestnet: useTestnet.toString()
+    };
+
+    document.getElementById("submitButton").disabled = true;
+    document.getElementById("responseLabel").innerHTML = null
+    document.getElementById("hyperlink").innerHTML = null
+    document.getElementById("hyperlink").href = null
+    updateSpinnerState()
+
+    $.ajax({
+        type: "POST",
+        url: "https://pc6n5kpftf.execute-api.us-east-1.amazonaws.com/prod/coins/",
+        data: JSON.stringify(dataObject),
+        success: function(responseData, textStatus, jqXHR) {
+            updateSpinnerState()
+            document.getElementById("submitButton").disabled = false;
+            grecaptcha.reset()
+            var myObj = JSON.parse(jqXHR.responseText);
+            document.getElementById("responseLabel").innerHTML = "Success! "
+            document.getElementById("hyperlink").innerHTML = "Watch Transaction Here"
+            document.getElementById("hyperlink").href = myObj.ETHSendURL
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            updateSpinnerState()
+            alert(jqXHR.responseText)
+            grecaptcha.reset()
+        }
+    });
+}
+</script>
+</HTML>

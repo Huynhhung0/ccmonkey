@@ -86,6 +86,7 @@ module.exports.isUserEligibleToReceive = async function (
     return true;
   }
 
+  console.log(requestInformation)
   if (requestInformation["Item"]) {
     const amountOfRequests = Number(
       requestInformation["Item"]["NumberOfRequests"]

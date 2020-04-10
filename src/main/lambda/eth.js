@@ -105,7 +105,7 @@ module.exports.sendToAddress = async function (destinationAddress, useTestnet) {
     gasPrice: gasPrices.medium * 1000000000,
     nonce: addressNonce,
     data: contract.methods
-      .transfer(destinationAddress, useTestnet ? 30000 : 1)
+      .transfer(destinationAddress, useTestnet ? 1000000 : 1)
       .encodeABI(),
     chainId: Values.chainId(useTestnet)
   };

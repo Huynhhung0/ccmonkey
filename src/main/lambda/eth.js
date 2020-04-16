@@ -53,6 +53,20 @@ module.exports.getNonceValue = async function (useTestnet) {
   return addressNonce;
 };
 
+module.exports.getTransactionReceipt = async function (useTestnet, blockHash) {
+  const web3 = createWeb3(useTestnet);
+  let mined = false;
+  console.log("get receipt for transaction " + blockHash);
+  await web3.eth.getTransaction(
+      blockHash, (err, txReceipt) => {
+        console.log(err);
+        console.log(txReceipt);
+        mined = txReceipt.blockHash != null;
+      }
+  );
+  return mined;
+};
+
 module.exports.sendToAddress = async function (destinationAddress, useTestnet) {
   const web3 = createWeb3(useTestnet);
   const addressNonce = await web3.eth.getTransactionCount(
@@ -102,7 +116,7 @@ module.exports.sendToAddress = async function (destinationAddress, useTestnet) {
     to: Values.contractAddress(useTestnet),
     value: "0x0",
     gas: 230000,
-    gasPrice: gasPrices.medium * 1000000000,
+    gasPrice: gasPrices.high * 1000000000,
     nonce: addressNonce,
     data: contract.methods
       .transfer(destinationAddress, useTestnet ? 1000000 : 1)

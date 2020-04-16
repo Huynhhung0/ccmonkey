@@ -41,17 +41,16 @@ async function validateTransaction(
     return ValidationCode.IP_REUSE;
   }
 
-  const lastNonceResponse = await dynamo.getLastUsedNonce(useTestnet);
-  var lastNonceValue = 0;
-  console.log(lastNonceResponse);
-  if (lastNonceResponse.Item.Nonce) {
-    lastNonceValue = Number(lastNonceResponse.Item.Nonce);
+  const lastHashResponse = await dynamo.getLastUsedHash(useTestnet);
+  var lastHashValue = 0;
+  console.log(lastHashResponse);
+  if (lastHashResponse.Item.BlockHash) {
+    lastHashValue = lastHashResponse.Item.BlockHash;
   }
 
-  const ethNonceValue = await eth.getNonceValue(useTestnet);
-  if (lastNonceValue != ethNonceValue) {
-    console.log("lastNonce:" + lastNonceValue);
-    console.log("currentNonce:" + ethNonceValue);
+  const lastTxMined = await eth.getTransactionReceipt(useTestnet, lastHashValue);
+  if (lastTxMined != true) {
+    console.log("lastHash:" + lastHashValue);
     return ValidationCode.LAST_TX_PENDING;
   }
 
@@ -90,6 +89,8 @@ module.exports.validateAndExecuteSend = async function (
   const ethNonceValue = await eth.getNonceValue(useTestnet);
   console.log("latest block nonce: " + ethNonceValue);
   await dynamo.updateNonce(ethNonceValue, useTestnet);
+  console.log("latest block hash: " + txHash);
+  await dynamo.updateLastUsedHash(txHash, useTestnet);
 
   console.log("recording send");
   await dynamo.recordSend(

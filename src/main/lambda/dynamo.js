@@ -34,6 +34,38 @@ module.exports.updateNonce = async function (newNonce, testnet) {
   return ddb.put(params).promise();
 };
 
+// Hash
+
+module.exports.getLastUsedHash = async function (testnet) {
+  const currencyName = values.currencyName(testnet);
+
+  console.log("get last used hash");
+  console.log("currencyName: " + currencyName);
+
+  const params = {
+    TableName: "Currency",
+    Key: {
+      CurrencyName: currencyName
+    }
+  };
+
+  return ddb.get(params).promise();
+};
+
+module.exports.updateLastUsedHash = async function (newHash, testnet) {
+  console.log("update hash");
+  const params = {
+    TableName: "Currency",
+    Item: {
+      CurrencyName: values.currencyName(testnet),
+      BlockHash: newHash
+    }
+  };
+
+  return ddb.put(params).promise();
+};
+
+
 // Sends
 
 module.exports.getRequestsFromUser = async function (userId) {
